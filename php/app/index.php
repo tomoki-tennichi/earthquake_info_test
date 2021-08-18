@@ -1,13 +1,3 @@
-<?php
-    // namespace Libraries;
-    // require_once "./vendor/autoload.php";
-    // require_once "./Libraries/Feed.php";
-
-    /* 他のXMLファイルにアクセスするAPI */
-    // https://www.php.net/manual/ja/simplexml.examples-basic.php
-?>
-
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -15,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <!-- Bootstrap -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-giJF6kkoqNQ00vy+HMDP7azOuL0xtbfIcaT9wjKHr8RbDVddVHyTfAAsrekwKmP1" crossorigin="anonymous">
+    <!-- CSS -->
     <link rel="stylesheet" href="/css/styles.css">
     <title>地震速報 - テスト</title>
 </head>
@@ -37,13 +28,12 @@
     <main>
 
         <?php
-            // $inst = new Feed;
-            $url = "http://www.data.jma.go.jp/developer/xml/feed/eqvol.xml";
-            // $atom = $inst->loadAtom($url);              // 上記URL内側、<feed> を指している
-            $target_subject = "震源・震度に関する情報";     // 
-            // var_dump($atom);
-            // var_dump($atom->title);
-            // $data = file_get_contents($url);
+            $url = "http://www.data.jma.go.jp/developer/xml/feed/eqvol.xml";    // データ取得先
+            /* 
+             * 取得したデータ内の、地震に関する情報の<title>
+             * 取得したデータ内には火山の情報も含まれている為、取得する項目を指定する
+             */
+            $target_subject = "震源・震度に関する情報";
             $xml_data = simplexml_load_file($url);
             // var_dump($xml_data);
         ?>
@@ -87,8 +77,6 @@
             </tbody>
         </table>
 
-
     </main>
-    
 </body>
 </html>
