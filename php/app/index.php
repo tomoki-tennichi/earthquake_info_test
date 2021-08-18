@@ -13,8 +13,10 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <!-- Bootstrap -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-giJF6kkoqNQ00vy+HMDP7azOuL0xtbfIcaT9wjKHr8RbDVddVHyTfAAsrekwKmP1" crossorigin="anonymous">
     <link rel="stylesheet" href="/css/styles.css">
-    <title>Manager_Login</title>
+    <title>地震速報 - テスト</title>
 </head>
 <body>
 
@@ -41,40 +43,51 @@
             $target_subject = "震源・震度に関する情報";     // 
             // var_dump($atom);
             // var_dump($atom->title);
-            $data
+            // $data = file_get_contents($url);
+            $xml_data = simplexml_load_file($url);
+            // var_dump($xml_data);
         ?>
         <!-- リスト、各<entry>下の<title> 表示 -->
-        <ul>
-        <?php
-        
-            // foreach($atom->entry as $entry) {
-            //     if ($entry->title == $target_subject) {
-            //         echo '<div>';
-            //         echo '<span>' . $entry->title . ': </span>';
+        <table class="table">
+            <thead>
+                <tr>
+                    <th scope="col">#</th>
+                    <th scope="col">情報の種類</th>
+                    <th scope="col">都道府県</th>
+                    <th scope="col">震源地</th>
+                    <th scope="col">マグニチュード</th>
+                    <th scope="col">メッセージ</th>
+                </tr>
+            </thead>
+            <tbody>
+            <?php
+            $count = 1;
+            foreach($xml_data->entry as $entry) {
+                if ($entry->title == $target_subject) {
+                    echo '<tr>';
+                    echo '<th scope="row">' . $count++ . '</th>';
+                    /* 情報の種類 */
+                    echo '<td>' . $entry->title . ': </td>';
 
-            //         if (isset($entry->link)) {
-            //             echo '<a>' . $entry->link['href'] . '</a>';
-            //             echo '[D00]';
-            //             $inst_child = new Feed;
-            //             $url_child = $entry->link['href'];
-            //             $atom_child = $inst_child->loadAtom($url_child);
-            //             echo $atom_child->Headline->Text;
-            //             echo '[D01]';
-            //         }
-                    
-            //         echo '</div>';
-            //     }
-            // }
-        ?>
-        </ul>
+                    /* リンクから、各震源・震度に関する情報 の細部の情報を取得 */
+                    $xml_child = simplexml_load_file($entry->link['href']);
 
-        <ul>
-            <li>test 00</li>
-            <li>test 01</li>
-            <li>test 02</li>
-            <li>test 03</li>
-            <li>test 04</li>
-        </ul>
+                    /* 都道府県 */
+                    echo '<td>' . $xml_child->Body->Intensity->Observation->Pref->Name . '</td>';
+                    /* 震源地 */
+                    echo '<td>' . $xml_child->Body->Earthquake->Hypocenter->Area->Name . '</td>';
+                    /* マグニチュード */
+                    echo '<td>' . $xml_child->Body->Earthquake->children('jmx_eb', true)->Magnitude . '</td>';
+                    /* メッセージ */
+                    echo '<td>' . $xml_child->Head->Headline->Text . '</td>';
+                    echo '</tr>';
+                }
+            }
+            ?>
+            </tbody>
+        </table>
+
+
     </main>
     
 </body>
