@@ -13,10 +13,10 @@ header h1 {
     margin: 0;
     padding: 10px 25px;
 }
-main {
+/* main {
     display: flex;
     justify-content: center;
-}
+} */
 nav {
     background-color: rgb(37, 109, 78);
     height: 50px;
