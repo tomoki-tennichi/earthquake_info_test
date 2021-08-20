@@ -46,7 +46,6 @@
                 <tr>
                     <th scope="col">#</th>
                     <th scope="col">都道府県</th>
-                    <!-- <th scope="col">地区名</th> -->
                     <th scope="col">市町村</th>
                     <th scope="col">情報名</th>
                     <th scope="col">発表状況</th>
@@ -57,7 +56,6 @@
             <?php
                 $count = 1;
                 foreach ($xml_weather->entry as $ent) {
-                    // strstr()
                     if ($ent->title == $target_title) {
                         
                         $msg = $ent->content;   // メッセージ
