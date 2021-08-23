@@ -45,7 +45,7 @@
                     <th scope="col">市町村</th>
                     <th scope="col">程度</th>
                     <th scope="col">状態</th>
-                    <th scope="col">メッセージ</th>
+                    <th scope="col">時刻</th>
                 </tr>
             </thead>
             <tbody>
@@ -57,7 +57,7 @@
                         $xml_child = simplexml_load_file($ent->link['href']);
 
                         $body = $xml_child->Body;
-                        $msg = $xml_child->Head->Headline->Text;    // メッセージ
+                        $time = $xml_child->Head->ReportDateTime;   // 時刻
                         $pref_name =  $body->TargetArea->Name;      // 都道府県
 
                         foreach ($body->Warning->Item as $item) {
@@ -72,8 +72,8 @@
                             echo '<td>' . $item->Kind->Name . '</td>';
                             /* 状態 */
                             echo '<td>' . $item->Kind->Status . '</td>';
-                            /* メッセージ */
-                            echo '<td>' . $msg . '</td>';
+                            /* 時刻 */
+                            echo '<td>' . $time . '</td>';
                             echo '</tr>';
                         }
                     }
