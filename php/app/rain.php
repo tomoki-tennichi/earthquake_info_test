@@ -52,8 +52,7 @@
                     <th scope="col">警報・注意報</th>
                     <th scope="col">相当レベル</th>
                     <th scope="col">状態</th>
-                    <th scope="col">都道府県メッセージ</th>
-                    <th scope="col">注意</th>
+                    <th scope="col">時刻</th>
                 </tr>
             </thead>
             <tbody>
@@ -62,13 +61,11 @@
             $count_rain = 1;
             foreach($xml_rain->entry as $ent_rain) {
 
-                $pref_msg = $ent_rain->content; // 都道府県メッセージ
-
-                if ($ent_rain->title == $title_rain && $ent_rain->author->name == $observatory) {
+                if ($ent_rain->title == $title_rain) {
                     /* リンクから、気象に関する情報 の細部の情報を取得 */
                     $xml_rain_child = simplexml_load_file($ent_rain->link['href']);
-                    $headline = $xml_rain_child->Head->Headline;
-                    $pref_rain = $headline->Information[0]->Item[0]->Areas->Area->Name; // 都道府県
+                    $head = $xml_rain_child->Head;
+                    $pref_rain = $head->Headline->Information[0]->Item[0]->Areas->Area->Name; // 都道府県
 
                     foreach ($xml_rain_child->Body->Warning[3]->Item as $item) {
                         $city_name = $item->Area->Name; // 市町村
@@ -102,16 +99,8 @@
                             }
                             /* 状態 */
                             echo '<td scope="row">' . $kind->Status . '</td>';
-                            /* 都道府県メッセージ */
-                            echo '<td scope="row">' . $headline->Text . '</td>';
-                            /* 注意 */
-                            echo '<td scope="row">';
-                            if (isset($kind->Attention)) {
-                                foreach ($kind->Attention->Note as $note) {
-                                    echo $note . ' ';
-                                }
-                            }
-                            echo '</td>';
+                            /* 時刻 */
+                            echo '<td scope="row">' . $head->ReportDateTime . '</td>';
 
                             echo '</tr>';
                         }
