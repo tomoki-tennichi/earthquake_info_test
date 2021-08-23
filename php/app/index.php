@@ -52,7 +52,7 @@
                     <th scope="col">市町村</th>
                     <th scope="col">震度</th>
                     <th scope="col">マグニチュード</th>
-                    <th scope="col">メッセージ</th>
+                    <th scope="col">時刻</th>
                 </tr>
             </thead>
             <tbody>
@@ -65,6 +65,16 @@
                     $xml_child = simplexml_load_file($entry->link['href']);
                     $observation = $xml_child->Body->Intensity->Observation;
                     $eq_data = $xml_child->Body->Earthquake;
+
+                    if (!isset($eq_data) || !isset($observation))   // 海外の地震情報を対象外としスキップ
+                        continue;
+
+                    $eq_time = "";  // 時刻表示用
+                    $eq_time = $eq_data->ArrivalTime;
+                    // if (isset($eq_data->ArrivalTime)) {
+                    //     $eq_time = $eq_data->OriginTime;
+                    // }
+
                     /* 各都道府県 */
                     foreach ($observation->Pref as $pref) {
                         /* 各地域 */
@@ -86,8 +96,9 @@
                                 echo '<td>' . $city->MaxInt . '</td>';
                                 /* マグニチュード */
                                 echo '<td>' . $eq_data->children('jmx_eb', true)->Magnitude . '</td>';
-                                /* メッセージ */
-                                echo '<td>' . $xml_child->Head->Headline->Text . '</td>';
+                                /* 時刻 */
+                                echo '<td>' . $eq_time . '</td>';
+                                // echo '<td>' . $xml_child->Head->Headline->Text . '</td>';
                                 echo '</tr>';
                             }
                         }
