@@ -49,7 +49,8 @@
                     <th scope="col">市町村</th>
                     <th scope="col">情報名</th>
                     <th scope="col">発表状況</th>
-                    <th scope="col">メッセージ</th>
+                    <th scope="col">発表時刻</th>
+                    <th scope="col">失効時刻</th>
                 </tr>
             </thead>
             <tbody>
@@ -58,13 +59,13 @@
                 foreach ($xml_weather->entry as $ent) {
                     if ($ent->title == $target_title) {
                         
-                        $msg = $ent->content;   // メッセージ
-                        
                         $xml_child = simplexml_load_file($ent->link['href']);
 
                         $body = $xml_child->Body;
-                        $headline = $xml_child->Head->Headline;
-                        $pref_name = $headline->Information[0]->Item->Areas->Area->Name;    // 都道府県
+                        $head = $xml_child->Head;
+                        $report_time = $head->ReportDateTime;
+                        $valid_time = $head->ValidDateTime;
+                        $pref_name = $head->Headline->Information[0]->Item->Areas->Area->Name;    // 都道府県
 
                         foreach ($body->Warning as $warning) {
                             /* 竜巻注意情報（市町村等） */
@@ -81,8 +82,10 @@
                                     echo '<td>' . $item->Kind->Name . '</td>';
                                     /* 発表状況 */
                                     echo '<td>' . $item->Kind->Status . '</td>';
-                                    /* メッセージ */
-                                    echo '<td>' . $msg . '</td>';
+                                    /* 発表時刻 */
+                                    echo '<td>' . $report_time . '</td>';
+                                    /* 失効時刻 */
+                                    echo '<td>' . $valid_time . '</td>';
                                     echo '</tr>';
                                 }
                             }
